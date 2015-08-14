@@ -59,7 +59,7 @@ public interface OFile {
    */
   void delete() throws IOException;
 
-  boolean synch() throws IOException;
+  void synch() throws IOException;
 
   void read(long iOffset, byte[] iDestBuffer, int iLenght) throws IOException;
 
@@ -79,7 +79,7 @@ public interface OFile {
 
   void writeByte(long iOffset, byte iValue) throws IOException;
 
-  long write(long iOffset, byte[] iSourceBuffer) throws IOException;
+  void write(long iOffset, byte[] iSourceBuffer) throws IOException;
 
   void setSoftlyClosed(boolean b) throws IOException;
 
@@ -89,12 +89,7 @@ public interface OFile {
 
   void lock() throws IOException;
 
-  FileLock lock(final long iRangeFrom, final long iRangeSize, final boolean iShared) throws IOException;
-
-  OFile unlock(final FileLock iLock) throws IOException;
-
   void unlock() throws IOException;
-
 
   /**
    * Shrink the file content (filledUpTo attribute only)
@@ -113,7 +108,7 @@ public interface OFile {
 
   boolean renameTo(File newFile) throws IOException;
 
-  long allocateSpace(final long iSize) throws IOException;
+  long allocateSpace(final long requiredSize) throws IOException;
 
   long getFileSize();
 

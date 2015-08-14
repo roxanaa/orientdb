@@ -38,9 +38,9 @@ import java.util.Map;
 @SuppressWarnings("serial")
 @SuppressFBWarnings(value = "SE_TRANSIENT_FIELD_NOT_RESTORED")
 public class OStorageConfigurationSegment extends OStorageConfiguration {
-  private static final long serialVersionUID = 638874446554389034L;
+  private static final long                  serialVersionUID = 638874446554389034L;
 
-  private static final int START_SIZE = 10000;
+  private static final int                   START_SIZE       = 10000;
   private final transient OSingleFileSegment segment;
 
   public OStorageConfigurationSegment(final OLocalPaginatedStorage iStorage) throws IOException {
@@ -117,8 +117,7 @@ public class OStorageConfigurationSegment extends OStorageConfiguration {
 
       final int len = buffer.length + OBinaryProtocol.SIZE_INT;
 
-      if (len > f.getFileSize())
-        f.allocateSpace(len - f.getFileSize());
+      f.allocateSpace(len);
 
       f.writeInt(0, buffer.length);
       f.write(OBinaryProtocol.SIZE_INT, buffer);

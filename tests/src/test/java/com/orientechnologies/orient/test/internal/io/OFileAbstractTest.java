@@ -27,38 +27,40 @@ import com.orientechnologies.orient.core.storage.fs.OFile;
 
 @Test(enabled = false)
 public abstract class OFileAbstractTest extends SpeedTestMonoThread {
-	protected static final String	FILE_NAME		= "C:/temp/orient-test.file";
+  protected static final String FILE_NAME  = "C:/temp/orient-test.file";
 
-	private static final int			NUMS				= 1000000;
+  private static final int      NUMS       = 1000000;
 
-	private static final int			START_SIZE	= 100000000;
-	private OFile									file;
+  private static final int      START_SIZE = 100000000;
+  private OFile                 file;
 
-	protected abstract OFile getFileImpl() throws IOException;
+  protected abstract OFile getFileImpl() throws IOException;
 
-	@Override
-	public void init() throws IOException {
-		// DELETE THE TEST FILE EVERY TIME
-		File f = new File(FILE_NAME);
-		if (f.exists())
-			f.delete();
+  @Override
+  public void init() throws IOException {
+    // DELETE THE TEST FILE EVERY TIME
+    File f = new File(FILE_NAME);
+    if (f.exists())
+      f.delete();
 
-		file = getFileImpl();
+    file = getFileImpl();
     file.create();
-	}
+  }
 
-	@Override
-	public void cycle() throws IOException {
-		System.out.println("Writing " + NUMS + " integers...");
-		for (int i = 0; i < NUMS; ++i)
-			file.writeInt(file.allocateSpace(OBinaryProtocol.SIZE_INT), i);
-		data.printSnapshot();
+  @Override
+  public void cycle() throws IOException {
+    System.out.println("Writing " + NUMS + " integers...");
+    file.allocateSpace(NUMS * OBinaryProtocol.SIZE_INT);
 
-		System.out.println("Checking all written data...");
-		for (int i = 0; i < NUMS; ++i)
-			Assert.assertTrue(file.readInt(i * OBinaryProtocol.SIZE_INT) == i);
-		data.printSnapshot();
+    for (int i = 0; i < NUMS; ++i)
+      file.writeInt(i * OBinaryProtocol.SIZE_INT, i);
+    data.printSnapshot();
 
-		file.close();
-	}
+    System.out.println("Checking all written data...");
+    for (int i = 0; i < NUMS; ++i)
+      Assert.assertTrue(file.readInt(i * OBinaryProtocol.SIZE_INT) == i);
+    data.printSnapshot();
+
+    file.close();
+  }
 }

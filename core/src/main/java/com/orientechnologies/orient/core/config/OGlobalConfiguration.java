@@ -84,7 +84,7 @@ public enum OGlobalConfiguration {
   DISK_WRITE_CACHE_PART("storage.diskCache.writeCachePart", "Percent of disk cache which is use as write cache", Integer.class, 15),
 
   DISK_WRITE_CACHE_PAGE_TTL("storage.diskCache.writeCachePageTTL",
-      "Max time till page will be flushed from write cache in seconds", Long.class, 24 * 60 * 60),
+      "Max time till page will be flushed from write cache in seconds", Long.class, 60 * 60),
 
   DISK_WRITE_CACHE_PAGE_FLUSH_INTERVAL("storage.diskCache.writeCachePageFlushInterval",
       "Interval between flushing of pages from write cache in ms.", Integer.class, 25),
@@ -134,7 +134,7 @@ public enum OGlobalConfiguration {
       + " will receive shutdown command and when background flush will be stopped (in ms.)", Integer.class, 10000),
 
   WAL_FUZZY_CHECKPOINT_INTERVAL("storage.wal.fuzzyCheckpointInterval", "Interval between fuzzy checkpoints (in seconds)",
-      Integer.class, 300),
+      Integer.class, 15),
 
   WAL_REPORT_AFTER_OPERATIONS_DURING_RESTORE(
       "storage.wal.reportAfterOperationsDuringRestore",
@@ -746,6 +746,9 @@ public enum OGlobalConfiguration {
 
     if (System.getProperty(DISK_CACHE_SIZE.key) == null)
       autoConfigDiskCacheSize(freeSpaceInMB);
+
+    if (System.getProperty(WAL_MAX_SIZE.key) == null)
+      WAL_MAX_SIZE.setValue(DISK_CACHE_SIZE.getValueAsInteger());
 
     if (System.getProperty(WAL_RESTORE_BATCH_SIZE.key) == null) {
       final long jvmMaxMemory = Runtime.getRuntime().maxMemory();

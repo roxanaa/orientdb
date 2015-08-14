@@ -21,6 +21,7 @@ package com.orientechnologies.orient.core.storage.cache;
 
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
@@ -32,26 +33,26 @@ import com.orientechnologies.orient.core.storage.impl.local.paginated.wal.OLogSe
  * @since 05.08.13
  */
 public class OCachePointer {
-  private static final int            WRITERS_OFFSET         = 32;
-  private static final int            READERS_MASK           = 0xFFFFFFFF;
+  private static final int                          WRITERS_OFFSET         = 32;
+  private static final int                          READERS_MASK           = 0xFFFFFFFF;
 
-  private final ReadWriteLock         readWriteLock          = new ReentrantReadWriteLock();
+  private final ReadWriteLock                       readWriteLock          = new ReentrantReadWriteLock();
 
-  private final AtomicInteger         referrersCount         = new AtomicInteger();
-  private final AtomicLong            readersWritersReferrer = new AtomicLong();
+  private final AtomicInteger                       referrersCount         = new AtomicInteger();
+  private final AtomicLong                          readersWritersReferrer = new AtomicLong();
 
-  private final AtomicInteger         usagesCounter          = new AtomicInteger();
+  private final AtomicInteger                       usagesCounter          = new AtomicInteger();
 
-  private volatile OLogSequenceNumber lastFlushedLsn;
+  private final AtomicReference<OLogSequenceNumber> lastFlushedLsn         = new AtomicReference<OLogSequenceNumber>();
 
-  private volatile WritersListener    writersListener;
+  private volatile WritersListener                  writersListener;
 
-  private final ODirectMemoryPointer  dataPointer;
-  private final long                  fileId;
-  private final long                  pageIndex;
+  private final ODirectMemoryPointer                dataPointer;
+  private final long                                fileId;
+  private final long                                pageIndex;
 
   public OCachePointer(ODirectMemoryPointer dataPointer, OLogSequenceNumber lastFlushedLsn, long fileId, long pageIndex) {
-    this.lastFlushedLsn = lastFlushedLsn;
+    this.lastFlushedLsn.set(lastFlushedLsn);
     this.dataPointer = dataPointer;
 
     this.fileId = fileId;
@@ -59,7 +60,7 @@ public class OCachePointer {
   }
 
   public OCachePointer(byte[] data, OLogSequenceNumber lastFlushedLsn, long fileId, long pageIndex) {
-    this.lastFlushedLsn = lastFlushedLsn;
+    this.lastFlushedLsn.set(lastFlushedLsn);
     dataPointer = new ODirectMemoryPointer(data);
 
     this.fileId = fileId;
@@ -79,11 +80,11 @@ public class OCachePointer {
   }
 
   public OLogSequenceNumber getLastFlushedLsn() {
-    return lastFlushedLsn;
+    return lastFlushedLsn.get();
   }
 
   public void setLastFlushedLsn(OLogSequenceNumber lastFlushedLsn) {
-    this.lastFlushedLsn = lastFlushedLsn;
+    this.lastFlushedLsn.set(lastFlushedLsn);
   }
 
   public void incrementReadersReferrer() {
