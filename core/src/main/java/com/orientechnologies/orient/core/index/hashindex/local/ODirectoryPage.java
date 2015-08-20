@@ -25,6 +25,7 @@ import com.orientechnologies.orient.core.config.OGlobalConfiguration;
 import com.orientechnologies.orient.core.storage.cache.OCacheEntry;
 import com.orientechnologies.orient.core.storage.impl.local.paginated.base.ODurablePage;
 import com.orientechnologies.orient.core.storage.impl.local.paginated.wal.OWALChangesTree;
+import com.orientechnologies.orient.core.storage.impl.local.paginated.wal.OWALPageChangesCollector;
 
 import java.io.IOException;
 
@@ -40,8 +41,8 @@ public class ODirectoryPage extends ODurablePage {
 
   private final OCacheEntry entry;
 
-  public ODirectoryPage(OCacheEntry cacheEntry, OWALChangesTree changesTree, OCacheEntry entry) {
-    super(cacheEntry, changesTree);
+  public ODirectoryPage(OCacheEntry cacheEntry, OWALPageChangesCollector changesCollector, OCacheEntry entry) {
+    super(cacheEntry, changesCollector);
     this.entry = entry;
   }
 

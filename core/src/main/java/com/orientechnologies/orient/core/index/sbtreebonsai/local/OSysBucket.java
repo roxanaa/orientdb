@@ -26,6 +26,7 @@ import com.orientechnologies.common.serialization.types.OByteSerializer;
 import com.orientechnologies.common.serialization.types.OLongSerializer;
 import com.orientechnologies.orient.core.storage.cache.OCacheEntry;
 import com.orientechnologies.orient.core.storage.impl.local.paginated.wal.OWALChangesTree;
+import com.orientechnologies.orient.core.storage.impl.local.paginated.wal.OWALPageChangesCollector;
 
 /**
  * <p>
@@ -53,8 +54,8 @@ public class OSysBucket extends OBonsaiBucketAbstract {
    */
   private static final byte SYS_MAGIC               = (byte) 41;
 
-  public OSysBucket(OCacheEntry cacheEntry, OWALChangesTree changesTree) {
-    super(cacheEntry, changesTree);
+  public OSysBucket(OCacheEntry cacheEntry, OWALPageChangesCollector changesCollector) {
+    super(cacheEntry, changesCollector);
   }
 
   public void init() throws IOException {

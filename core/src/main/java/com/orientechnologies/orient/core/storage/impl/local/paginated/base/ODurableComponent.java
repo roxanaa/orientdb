@@ -111,11 +111,11 @@ public abstract class ODurableComponent extends OSharedResourceAdaptive {
     return atomicOperationsManager.startAtomicOperation(this, false);
   }
 
-  protected OWALChangesTree getChangesTree(OAtomicOperation atomicOperation, OCacheEntry entry) {
+  protected OWALPageChangesCollector getChanges(OAtomicOperation atomicOperation, OCacheEntry entry) {
     if (atomicOperation == null)
       return null;
 
-    return atomicOperation.getChangesTree(entry.getFileId(), entry.getPageIndex());
+    return atomicOperation.getChanges(entry.getFileId(), entry.getPageIndex());
   }
 
   protected long getFilledUpTo(OAtomicOperation atomicOperation, long fileId) throws IOException {

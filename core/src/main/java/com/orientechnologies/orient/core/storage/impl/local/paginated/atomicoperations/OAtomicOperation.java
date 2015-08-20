@@ -20,6 +20,7 @@
 package com.orientechnologies.orient.core.storage.impl.local.paginated.atomicoperations;
 
 import com.orientechnologies.common.directmemory.ODirectMemoryPointer;
+import com.orientechnologies.orient.core.config.OGlobalConfiguration;
 import com.orientechnologies.orient.core.exception.OStorageException;
 import com.orientechnologies.orient.core.storage.cache.OCacheEntry;
 import com.orientechnologies.orient.core.storage.cache.OCachePointer;
@@ -169,7 +170,7 @@ public class OAtomicOperation {
       readCache.release(cacheEntry, writeCache);
   }
 
-  public OWALChangesTree getChangesTree(long fileId, long pageIndex) {
+  public OWALPageChangesCollector getChanges(long fileId, long pageIndex) {
     fileId = checkFileIdCompatibilty(fileId, storageId);
 
     if (deletedFiles.contains(fileId))
@@ -181,7 +182,7 @@ public class OAtomicOperation {
     final FilePageChanges pageChangesContainer = changesContainer.pageChangesMap.get(pageIndex);
     assert pageChangesContainer != null;
 
-    return pageChangesContainer.changesTree;
+    return pageChangesContainer.changesCollector;
   }
 
   public long filledUpTo(long fileId) throws IOException {
@@ -345,7 +346,7 @@ public class OAtomicOperation {
           final FilePageChanges filePageChanges = filePageChangesEntry.getValue();
 
           filePageChanges.lsn = writeAheadLog.log(new OUpdatePageRecord(pageIndex, fileId, operationUnitId,
-              filePageChanges.changesTree));
+              filePageChanges.changesCollector));
         }
       }
     }
@@ -381,7 +382,7 @@ public class OAtomicOperation {
         cacheEntry.acquireExclusiveLock();
         try {
           ODurablePage durablePage = new ODurablePage(cacheEntry, null);
-          durablePage.restoreChanges(filePageChanges.changesTree);
+          durablePage.restoreChanges(filePageChanges.changesCollector);
 
           if (!rollbackOnlyMode)
             durablePage.setLsn(filePageChanges.lsn);
@@ -460,10 +461,10 @@ public class OAtomicOperation {
   }
 
   private static class FilePageChanges {
-    private OWALChangesTree    changesTree = new OWALChangesTree();
-    private OLogSequenceNumber lsn         = null;
-    private boolean            isNew       = false;
-    private boolean            pinPage     = false;
+    private OWALPageChangesCollector changesCollector = new OWALPageChangesCollector();
+    private OLogSequenceNumber       lsn              = null;
+    private boolean                  isNew            = false;
+    private boolean                  pinPage          = false;
   }
 
   private int storageId(long fileId) {

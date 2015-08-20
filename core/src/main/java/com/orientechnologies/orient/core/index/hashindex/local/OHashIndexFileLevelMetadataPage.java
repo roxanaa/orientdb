@@ -25,6 +25,7 @@ import com.orientechnologies.common.serialization.types.OLongSerializer;
 import com.orientechnologies.orient.core.storage.cache.OCacheEntry;
 import com.orientechnologies.orient.core.storage.impl.local.paginated.base.ODurablePage;
 import com.orientechnologies.orient.core.storage.impl.local.paginated.wal.OWALChangesTree;
+import com.orientechnologies.orient.core.storage.impl.local.paginated.wal.OWALPageChangesCollector;
 
 import java.io.IOException;
 
@@ -41,8 +42,9 @@ public class OHashIndexFileLevelMetadataPage extends ODurablePage {
 
   private final static int ITEM_SIZE                  = OByteSerializer.BYTE_SIZE + 3 * OLongSerializer.LONG_SIZE;
 
-  public OHashIndexFileLevelMetadataPage(OCacheEntry cacheEntry, OWALChangesTree changesTree, boolean isNewPage) throws IOException {
-    super(cacheEntry, changesTree);
+  public OHashIndexFileLevelMetadataPage(OCacheEntry cacheEntry, OWALPageChangesCollector changesCollector, boolean isNewPage)
+      throws IOException {
+    super(cacheEntry, changesCollector);
 
     if (isNewPage) {
       for (int i = 0; i < OLocalHashTable.HASH_CODE_SIZE; i++)

@@ -26,6 +26,7 @@ import com.orientechnologies.common.serialization.types.OLongSerializer;
 import com.orientechnologies.orient.core.storage.cache.OCacheEntry;
 import com.orientechnologies.orient.core.storage.impl.local.paginated.base.ODurablePage;
 import com.orientechnologies.orient.core.storage.impl.local.paginated.wal.OWALChangesTree;
+import com.orientechnologies.orient.core.storage.impl.local.paginated.wal.OWALPageChangesCollector;
 
 /**
  * A base class for bonsai buckets. Bonsai bucket size is usually less than page size and one page could contain multiple bonsai
@@ -39,8 +40,8 @@ import com.orientechnologies.orient.core.storage.impl.local.paginated.wal.OWALCh
  * @author Artem Orobets (enisher-at-gmail.com)
  */
 public class OBonsaiBucketAbstract extends ODurablePage {
-  public OBonsaiBucketAbstract(OCacheEntry cacheEntry, OWALChangesTree changesTree) {
-    super(cacheEntry, changesTree);
+  public OBonsaiBucketAbstract(OCacheEntry cacheEntry, OWALPageChangesCollector changesCollector) {
+    super(cacheEntry, changesCollector);
   }
 
   /**

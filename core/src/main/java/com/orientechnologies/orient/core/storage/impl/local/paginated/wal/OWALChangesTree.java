@@ -1,6 +1,5 @@
 package com.orientechnologies.orient.core.storage.impl.local.paginated.wal;
 
-import com.orientechnologies.common.directmemory.ODirectMemory;
 import com.orientechnologies.common.directmemory.ODirectMemoryPointer;
 import com.orientechnologies.common.serialization.types.OByteSerializer;
 import com.orientechnologies.common.serialization.types.OIntegerSerializer;
@@ -299,7 +298,7 @@ public class OWALChangesTree {
     applyChanges(pointer, root, processedNodes);
   }
 
-  public PointerWrapper wrap(final ODirectMemoryPointer pointer) {
+  public ODirectPointerWrapper wrap(final ODirectMemoryPointer pointer) {
     return new PointerWrapper(pointer);
   }
 
@@ -761,33 +760,39 @@ public class OWALChangesTree {
     }
   }
 
-  public final class PointerWrapper {
+  public final class PointerWrapper implements ODirectPointerWrapper {
     private final ODirectMemoryPointer pointer;
 
     private PointerWrapper(ODirectMemoryPointer pointer) {
       this.pointer = pointer;
     }
 
+    @Override
     public byte getByte(long offset) {
       return OWALChangesTree.this.getByteValue(pointer, (int) offset);
     }
 
+    @Override
     public short getShort(long offset) {
       return OWALChangesTree.this.getShortValue(pointer, (int) offset);
     }
 
+    @Override
     public int getInt(long offset) {
       return OWALChangesTree.this.getIntValue(pointer, (int) offset);
     }
 
+    @Override
     public long getLong(long offset) {
       return OWALChangesTree.this.getLongValue(pointer, (int) offset);
     }
 
+    @Override
     public byte[] get(long offset, int len) {
       return OWALChangesTree.this.getBinaryValue(pointer, (int) offset, len);
     }
 
+    @Override
     public char getChar(long offset) {
       return (char) OWALChangesTree.this.getShortValue(pointer, (int) offset);
     }

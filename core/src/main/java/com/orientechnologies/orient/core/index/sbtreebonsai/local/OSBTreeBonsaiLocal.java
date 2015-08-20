@@ -129,7 +129,7 @@ public class OSBTreeBonsaiLocal<K, V> extends ODurableComponent implements OSBTr
     rootCacheEntry.acquireExclusiveLock();
     try {
       OSBTreeBonsaiBucket<K, V> rootBucket = new OSBTreeBonsaiBucket<K, V>(rootCacheEntry, this.rootBucketPointer.getPageOffset(),
-          true, keySerializer, valueSerializer, getChangesTree(atomicOperation, rootCacheEntry));
+          true, keySerializer, valueSerializer, getChanges(atomicOperation, rootCacheEntry));
       rootBucket.setTreeSize(0);
     } finally {
       rootCacheEntry.releaseExclusiveLock();
@@ -189,7 +189,7 @@ public class OSBTreeBonsaiLocal<K, V> extends ODurableComponent implements OSBTr
         OCacheEntry keyBucketCacheEntry = loadPage(atomicOperation, fileId, bucketPointer.getPageIndex(), false);
         try {
           OSBTreeBonsaiBucket<K, V> keyBucket = new OSBTreeBonsaiBucket<K, V>(keyBucketCacheEntry, bucketPointer.getPageOffset(),
-              keySerializer, valueSerializer, getChangesTree(atomicOperation, keyBucketCacheEntry));
+              keySerializer, valueSerializer, getChanges(atomicOperation, keyBucketCacheEntry));
           return keyBucket.getEntry(bucketSearchResult.itemIndex).value;
         } finally {
           releasePage(atomicOperation, keyBucketCacheEntry);
@@ -221,7 +221,7 @@ public class OSBTreeBonsaiLocal<K, V> extends ODurableComponent implements OSBTr
       OCacheEntry keyBucketCacheEntry = loadPage(atomicOperation, fileId, bucketPointer.getPageIndex(), false);
       keyBucketCacheEntry.acquireExclusiveLock();
       OSBTreeBonsaiBucket<K, V> keyBucket = new OSBTreeBonsaiBucket<K, V>(keyBucketCacheEntry, bucketPointer.getPageOffset(),
-          keySerializer, valueSerializer, getChangesTree(atomicOperation, keyBucketCacheEntry));
+          keySerializer, valueSerializer, getChanges(atomicOperation, keyBucketCacheEntry));
 
       final boolean itemFound = bucketSearchResult.itemIndex >= 0;
       boolean result = true;
@@ -247,7 +247,7 @@ public class OSBTreeBonsaiLocal<K, V> extends ODurableComponent implements OSBTr
           keyBucketCacheEntry.acquireExclusiveLock();
 
           keyBucket = new OSBTreeBonsaiBucket<K, V>(keyBucketCacheEntry, bucketPointer.getPageOffset(), keySerializer,
-              valueSerializer, getChangesTree(atomicOperation, keyBucketCacheEntry));
+              valueSerializer, getChanges(atomicOperation, keyBucketCacheEntry));
         }
       }
 
@@ -310,13 +310,13 @@ public class OSBTreeBonsaiLocal<K, V> extends ODurableComponent implements OSBTr
       cacheEntry.acquireExclusiveLock();
       try {
         OSBTreeBonsaiBucket<K, V> rootBucket = new OSBTreeBonsaiBucket<K, V>(cacheEntry, rootBucketPointer.getPageOffset(),
-            keySerializer, valueSerializer, getChangesTree(atomicOperation, cacheEntry));
+            keySerializer, valueSerializer, getChanges(atomicOperation, cacheEntry));
 
         addChildrenToQueue(subTreesToDelete, rootBucket);
 
         rootBucket.shrink(0);
         rootBucket = new OSBTreeBonsaiBucket<K, V>(cacheEntry, rootBucketPointer.getPageOffset(), true, keySerializer,
-            valueSerializer, getChangesTree(atomicOperation, cacheEntry));
+            valueSerializer, getChanges(atomicOperation, cacheEntry));
 
         rootBucket.setTreeSize(0);
       } finally {
@@ -364,7 +364,7 @@ public class OSBTreeBonsaiLocal<K, V> extends ODurableComponent implements OSBTr
       cacheEntry.acquireExclusiveLock();
       try {
         final OSBTreeBonsaiBucket<K, V> bucket = new OSBTreeBonsaiBucket<K, V>(cacheEntry, bucketPointer.getPageOffset(),
-            keySerializer, valueSerializer, getChangesTree(atomicOperation, cacheEntry));
+            keySerializer, valueSerializer, getChanges(atomicOperation, cacheEntry));
 
         addChildrenToQueue(subTreesToDelete, bucket);
 
@@ -381,7 +381,7 @@ public class OSBTreeBonsaiLocal<K, V> extends ODurableComponent implements OSBTr
       final OCacheEntry sysCacheEntry = loadPage(atomicOperation, fileId, SYS_BUCKET.getPageIndex(), false);
       sysCacheEntry.acquireExclusiveLock();
       try {
-        final OSysBucket sysBucket = new OSysBucket(sysCacheEntry, getChangesTree(atomicOperation, sysCacheEntry));
+        final OSysBucket sysBucket = new OSysBucket(sysCacheEntry, getChanges(atomicOperation, sysCacheEntry));
 
         attachFreeListHead(tail, sysBucket.getFreeListHead(), atomicOperation);
         sysBucket.setFreeListHead(head);
@@ -400,7 +400,7 @@ public class OSBTreeBonsaiLocal<K, V> extends ODurableComponent implements OSBTr
     cacheEntry.acquireExclusiveLock();
     try {
       final OSBTreeBonsaiBucket<K, V> bucket = new OSBTreeBonsaiBucket<K, V>(cacheEntry, bucketPointer.getPageOffset(),
-          keySerializer, valueSerializer, getChangesTree(atomicOperation, cacheEntry));
+          keySerializer, valueSerializer, getChanges(atomicOperation, cacheEntry));
 
       bucket.setFreeListPointer(freeListHead);
     } finally {
@@ -451,7 +451,7 @@ public class OSBTreeBonsaiLocal<K, V> extends ODurableComponent implements OSBTr
       rootCacheEntry.acquireSharedLock();
       try {
         OSBTreeBonsaiBucket<K, V> rootBucket = new OSBTreeBonsaiBucket<K, V>(rootCacheEntry, this.rootBucketPointer.getPageOffset(),
-            keySerializer, valueSerializer, getChangesTree(atomicOperation, rootCacheEntry));
+ keySerializer, valueSerializer, getChanges(atomicOperation, rootCacheEntry));
         keySerializer = (OBinarySerializer<K>) OBinarySerializerFactory.getInstance()
             .getObjectSerializer(rootBucket.getKeySerializerId());
         valueSerializer = (OBinarySerializer<V>) OBinarySerializerFactory.getInstance()
@@ -474,7 +474,7 @@ public class OSBTreeBonsaiLocal<K, V> extends ODurableComponent implements OSBTr
     rootCacheEntry.acquireExclusiveLock();
     try {
       OSBTreeBonsaiBucket<K, V> rootBucket = new OSBTreeBonsaiBucket<K, V>(rootCacheEntry, rootBucketPointer.getPageOffset(),
-          keySerializer, valueSerializer, getChangesTree(atomicOperation, rootCacheEntry));
+          keySerializer, valueSerializer, getChanges(atomicOperation, rootCacheEntry));
       rootBucket.setTreeSize(size);
     } finally {
       rootCacheEntry.releaseExclusiveLock();
@@ -493,7 +493,7 @@ public class OSBTreeBonsaiLocal<K, V> extends ODurableComponent implements OSBTr
 
         try {
           OSBTreeBonsaiBucket rootBucket = new OSBTreeBonsaiBucket<K, V>(rootCacheEntry, rootBucketPointer.getPageOffset(),
-              keySerializer, valueSerializer, getChangesTree(atomicOperation, rootCacheEntry));
+              keySerializer, valueSerializer, getChanges(atomicOperation, rootCacheEntry));
           return rootBucket.getTreeSize();
         } finally {
           releasePage(atomicOperation, rootCacheEntry);
@@ -533,7 +533,7 @@ public class OSBTreeBonsaiLocal<K, V> extends ODurableComponent implements OSBTr
       keyBucketCacheEntry.acquireExclusiveLock();
       try {
         OSBTreeBonsaiBucket<K, V> keyBucket = new OSBTreeBonsaiBucket<K, V>(keyBucketCacheEntry, bucketPointer.getPageOffset(),
-            keySerializer, valueSerializer, getChangesTree(atomicOperation, keyBucketCacheEntry));
+            keySerializer, valueSerializer, getChanges(atomicOperation, keyBucketCacheEntry));
 
         removed = keyBucket.getEntry(bucketSearchResult.itemIndex).value;
 
@@ -605,7 +605,7 @@ public class OSBTreeBonsaiLocal<K, V> extends ODurableComponent implements OSBTr
           OCacheEntry cacheEntry = loadPage(atomicOperation, fileId, bucketPointer.getPageIndex(), false);
           try {
             OSBTreeBonsaiBucket<K, V> bucket = new OSBTreeBonsaiBucket<K, V>(cacheEntry, bucketPointer.getPageOffset(),
-                keySerializer, valueSerializer, getChangesTree(atomicOperation, cacheEntry));
+                keySerializer, valueSerializer, getChanges(atomicOperation, cacheEntry));
             if (!firstBucket)
               index = bucket.size() - 1;
 
@@ -685,7 +685,7 @@ public class OSBTreeBonsaiLocal<K, V> extends ODurableComponent implements OSBTr
           final OCacheEntry cacheEntry = loadPage(atomicOperation, fileId, bucketPointer.getPageIndex(), false);
           try {
             OSBTreeBonsaiBucket<K, V> bucket = new OSBTreeBonsaiBucket<K, V>(cacheEntry, bucketPointer.getPageOffset(),
-                keySerializer, valueSerializer, getChangesTree(atomicOperation, cacheEntry));
+                keySerializer, valueSerializer, getChanges(atomicOperation, cacheEntry));
             int bucketSize = bucket.size();
             for (int i = index; i < bucketSize; i++) {
               if (!listener.addResult(bucket.getEntry(i)))
@@ -743,7 +743,7 @@ public class OSBTreeBonsaiLocal<K, V> extends ODurableComponent implements OSBTr
         int itemIndex = 0;
 
         OSBTreeBonsaiBucket<K, V> bucket = new OSBTreeBonsaiBucket<K, V>(cacheEntry, bucketPointer.getPageOffset(), keySerializer,
-            valueSerializer, getChangesTree(atomicOperation, cacheEntry));
+            valueSerializer, getChanges(atomicOperation, cacheEntry));
         try {
           while (true) {
             if (bucket.isLeaf()) {
@@ -788,7 +788,7 @@ public class OSBTreeBonsaiLocal<K, V> extends ODurableComponent implements OSBTr
             cacheEntry = loadPage(atomicOperation, fileId, bucketPointer.getPageIndex(), false);
 
             bucket = new OSBTreeBonsaiBucket<K, V>(cacheEntry, bucketPointer.getPageOffset(), keySerializer, valueSerializer,
-                getChangesTree(atomicOperation, cacheEntry));
+                getChanges(atomicOperation, cacheEntry));
           }
         } finally {
           releasePage(atomicOperation, cacheEntry);
@@ -816,7 +816,7 @@ public class OSBTreeBonsaiLocal<K, V> extends ODurableComponent implements OSBTr
         OAtomicOperation atomicOperation = atomicOperationsManager.getCurrentOperation();
         OCacheEntry cacheEntry = loadPage(atomicOperation, fileId, bucketPointer.getPageIndex(), false);
         OSBTreeBonsaiBucket<K, V> bucket = new OSBTreeBonsaiBucket<K, V>(cacheEntry, bucketPointer.getPageOffset(), keySerializer,
-            valueSerializer, getChangesTree(atomicOperation, cacheEntry));
+            valueSerializer, getChanges(atomicOperation, cacheEntry));
 
         int itemIndex = bucket.size() - 1;
         try {
@@ -862,7 +862,7 @@ public class OSBTreeBonsaiLocal<K, V> extends ODurableComponent implements OSBTr
             cacheEntry = loadPage(atomicOperation, fileId, bucketPointer.getPageIndex(), false);
 
             bucket = new OSBTreeBonsaiBucket<K, V>(cacheEntry, bucketPointer.getPageOffset(), keySerializer, valueSerializer,
-                getChangesTree(atomicOperation, cacheEntry));
+                getChanges(atomicOperation, cacheEntry));
             if (itemIndex == OSBTreeBonsaiBucket.MAX_BUCKET_SIZE_BYTES + 1)
               itemIndex = bucket.size() - 1;
           }
@@ -917,7 +917,7 @@ public class OSBTreeBonsaiLocal<K, V> extends ODurableComponent implements OSBTr
           final OCacheEntry cacheEntry = loadPage(atomicOperation, fileId, bucketPointer.getPageIndex(), false);
           try {
             OSBTreeBonsaiBucket<K, V> bucket = new OSBTreeBonsaiBucket<K, V>(cacheEntry, bucketPointer.getPageOffset(),
-                keySerializer, valueSerializer, getChangesTree(atomicOperation, cacheEntry));
+                keySerializer, valueSerializer, getChanges(atomicOperation, cacheEntry));
             if (!bucketPointer.equals(bucketPointerTo))
               endIndex = bucket.size() - 1;
             else
@@ -975,7 +975,7 @@ public class OSBTreeBonsaiLocal<K, V> extends ODurableComponent implements OSBTr
     bucketEntry.acquireExclusiveLock();
     try {
       OSBTreeBonsaiBucket<K, V> bucketToSplit = new OSBTreeBonsaiBucket<K, V>(bucketEntry, bucketPointer.getPageOffset(),
-          keySerializer, valueSerializer, getChangesTree(atomicOperation, bucketEntry));
+          keySerializer, valueSerializer, getChanges(atomicOperation, bucketEntry));
 
       final boolean splitLeaf = bucketToSplit.isLeaf();
       final int bucketSize = bucketToSplit.size();
@@ -999,7 +999,8 @@ public class OSBTreeBonsaiLocal<K, V> extends ODurableComponent implements OSBTr
         try {
           OSBTreeBonsaiBucket<K, V> newRightBucket = new OSBTreeBonsaiBucket<K, V>(rightBucketEntry,
               rightBucketPointer.getPageOffset(), splitLeaf, keySerializer, valueSerializer,
-              getChangesTree(atomicOperation, rightBucketEntry));
+ getChanges(atomicOperation,
+                  rightBucketEntry));
           newRightBucket.addAll(rightEntries);
 
           bucketToSplit.shrink(indexToSplit);
@@ -1019,7 +1020,8 @@ public class OSBTreeBonsaiLocal<K, V> extends ODurableComponent implements OSBTr
               rightSiblingBucketEntry.acquireExclusiveLock();
               OSBTreeBonsaiBucket<K, V> rightSiblingBucket = new OSBTreeBonsaiBucket<K, V>(rightSiblingBucketEntry,
                   rightSiblingBucketPointer.getPageOffset(), keySerializer, valueSerializer,
-                  getChangesTree(atomicOperation, rightSiblingBucketEntry));
+ getChanges(atomicOperation,
+                      rightSiblingBucketEntry));
               try {
                 rightSiblingBucket.setLeftSibling(rightBucketPointer);
               } finally {
@@ -1036,7 +1038,7 @@ public class OSBTreeBonsaiLocal<K, V> extends ODurableComponent implements OSBTr
           try {
             OSBTreeBonsaiBucket<K, V> parentBucket = new OSBTreeBonsaiBucket<K, V>(parentCacheEntry,
                 parentBucketPointer.getPageOffset(), keySerializer, valueSerializer,
-                getChangesTree(atomicOperation, parentCacheEntry));
+ getChanges(atomicOperation, parentCacheEntry));
             OSBTreeBonsaiBucket.SBTreeEntry<K, V> parentEntry = new OSBTreeBonsaiBucket.SBTreeEntry<K, V>(bucketPointer,
                 rightBucketPointer, separationKey, null);
 
@@ -1059,7 +1061,7 @@ public class OSBTreeBonsaiLocal<K, V> extends ODurableComponent implements OSBTr
               insertionIndex = bucketSearchResult.itemIndex;
 
               parentBucket = new OSBTreeBonsaiBucket<K, V>(parentCacheEntry, parentBucketPointer.getPageOffset(), keySerializer,
-                  valueSerializer, getChangesTree(atomicOperation, parentCacheEntry));
+                  valueSerializer, getChanges(atomicOperation, parentCacheEntry));
             }
 
           } finally {
@@ -1106,7 +1108,8 @@ public class OSBTreeBonsaiLocal<K, V> extends ODurableComponent implements OSBTr
         try {
           OSBTreeBonsaiBucket<K, V> newLeftBucket = new OSBTreeBonsaiBucket<K, V>(leftBucketEntry,
               leftBucketPointer.getPageOffset(), splitLeaf, keySerializer, valueSerializer,
-              getChangesTree(atomicOperation, leftBucketEntry));
+ getChanges(atomicOperation,
+                  leftBucketEntry));
           newLeftBucket.addAll(leftEntries);
 
           if (splitLeaf)
@@ -1120,7 +1123,8 @@ public class OSBTreeBonsaiLocal<K, V> extends ODurableComponent implements OSBTr
         try {
           OSBTreeBonsaiBucket<K, V> newRightBucket = new OSBTreeBonsaiBucket<K, V>(rightBucketEntry,
               rightBucketPointer.getPageOffset(), splitLeaf, keySerializer, valueSerializer,
-              getChangesTree(atomicOperation, rightBucketEntry));
+ getChanges(atomicOperation,
+                  rightBucketEntry));
           newRightBucket.addAll(rightEntries);
 
           if (splitLeaf)
@@ -1131,7 +1135,7 @@ public class OSBTreeBonsaiLocal<K, V> extends ODurableComponent implements OSBTr
         }
 
         bucketToSplit = new OSBTreeBonsaiBucket<K, V>(bucketEntry, bucketPointer.getPageOffset(), false, keySerializer,
-            valueSerializer, getChangesTree(atomicOperation, bucketEntry));
+            valueSerializer, getChanges(atomicOperation, bucketEntry));
         bucketToSplit.setTreeSize(treeSize);
 
         bucketToSplit.addEntry(0,
@@ -1169,7 +1173,7 @@ public class OSBTreeBonsaiLocal<K, V> extends ODurableComponent implements OSBTr
       final OSBTreeBonsaiBucket.SBTreeEntry<K, V> entry;
       try {
         final OSBTreeBonsaiBucket<K, V> keyBucket = new OSBTreeBonsaiBucket<K, V>(bucketEntry, bucketPointer.getPageOffset(),
-            keySerializer, valueSerializer, getChangesTree(atomicOperation, bucketEntry));
+            keySerializer, valueSerializer, getChanges(atomicOperation, bucketEntry));
         final int index = keyBucket.find(key);
 
         if (keyBucket.isLeaf())
@@ -1205,7 +1209,7 @@ public class OSBTreeBonsaiLocal<K, V> extends ODurableComponent implements OSBTr
 
     sysCacheEntry.acquireExclusiveLock();
     try {
-      OSysBucket sysBucket = new OSysBucket(sysCacheEntry, getChangesTree(atomicOperation, sysCacheEntry));
+      OSysBucket sysBucket = new OSysBucket(sysCacheEntry, getChanges(atomicOperation, sysCacheEntry));
       if (sysBucket.isInitialized()) {
         sysCacheEntry.releaseExclusiveLock();
         releasePage(atomicOperation, sysCacheEntry);
@@ -1213,7 +1217,7 @@ public class OSBTreeBonsaiLocal<K, V> extends ODurableComponent implements OSBTr
         sysCacheEntry = loadPage(atomicOperation, fileId, SYS_BUCKET.getPageIndex(), false);
         sysCacheEntry.acquireExclusiveLock();
 
-        sysBucket = new OSysBucket(sysCacheEntry, getChangesTree(atomicOperation, sysCacheEntry));
+        sysBucket = new OSysBucket(sysCacheEntry, getChanges(atomicOperation, sysCacheEntry));
         sysBucket.init();
       }
     } finally {
@@ -1231,7 +1235,7 @@ public class OSBTreeBonsaiLocal<K, V> extends ODurableComponent implements OSBTr
 
     sysCacheEntry.acquireExclusiveLock();
     try {
-      final OSysBucket sysBucket = new OSysBucket(sysCacheEntry, getChangesTree(atomicOperation, sysCacheEntry));
+      final OSysBucket sysBucket = new OSysBucket(sysCacheEntry, getChanges(atomicOperation, sysCacheEntry));
       if ((1.0 * sysBucket.freeListLength()) / ((1.0 * getFilledUpTo(atomicOperation, fileId)) * PAGE_SIZE
           / OSBTreeBonsaiBucket.MAX_BUCKET_SIZE_BYTES) >= freeSpaceReuseTrigger) {
         final AllocationResult allocationResult = reuseBucketFromFreeList(sysBucket, atomicOperation);
@@ -1266,7 +1270,7 @@ public class OSBTreeBonsaiLocal<K, V> extends ODurableComponent implements OSBTr
     cacheEntry.acquireExclusiveLock();
     try {
       final OSBTreeBonsaiBucket<K, V> bucket = new OSBTreeBonsaiBucket<K, V>(cacheEntry, oldFreeListHead.getPageOffset(),
-          keySerializer, valueSerializer, getChangesTree(atomicOperation, cacheEntry));
+          keySerializer, valueSerializer, getChanges(atomicOperation, cacheEntry));
 
       sysBucket.setFreeListHead(bucket.getFreeListPointer());
       sysBucket.setFreeListLength(sysBucket.freeListLength() - 1);

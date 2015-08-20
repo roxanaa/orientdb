@@ -24,7 +24,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 import com.orientechnologies.common.directmemory.ODirectMemoryPointer;
-import com.orientechnologies.orient.core.storage.impl.local.paginated.wal.OWALChangesTree;
+import com.orientechnologies.orient.core.storage.impl.local.paginated.wal.ODirectPointerWrapper;
 
 /**
  * Serializer for {@link Date} type, it serializes it without time part.
@@ -105,7 +105,7 @@ public class ODateSerializer implements OBinarySerializer<Date> {
   }
 
   @Override
-  public Date deserializeFromDirectMemoryObject(OWALChangesTree.PointerWrapper wrapper, long offset) {
+  public Date deserializeFromDirectMemoryObject(ODirectPointerWrapper wrapper, long offset) {
     final ODateTimeSerializer dateTimeSerializer = ODateTimeSerializer.INSTANCE;
     return dateTimeSerializer.deserializeFromDirectMemoryObject(wrapper, offset);
   }
@@ -116,7 +116,7 @@ public class ODateSerializer implements OBinarySerializer<Date> {
   }
 
   @Override
-  public int getObjectSizeInDirectMemory(OWALChangesTree.PointerWrapper wrapper, long offset) {
+  public int getObjectSizeInDirectMemory(ODirectPointerWrapper wrapper, long offset) {
     return OLongSerializer.LONG_SIZE;
   }
 

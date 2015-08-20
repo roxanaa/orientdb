@@ -10,12 +10,11 @@ import org.testng.annotations.Test;
 @Test
 public class UpdatePageRecordTest {
   public void testSerializationPrevLSNIsNotNull() {
-    OWALChangesTree changesTree = new OWALChangesTree();
+    OWALPageChangesCollector changes = new OWALPageChangesCollector();
 
     OOperationUnitId unitId = OOperationUnitId.generateId();
 
-    OUpdatePageRecord serializedUpdatePageRecord = new OUpdatePageRecord(12, 100, unitId, changesTree
-    );
+    OUpdatePageRecord serializedUpdatePageRecord = new OUpdatePageRecord(12, 100, unitId, changes);
 
     byte[] content = new byte[serializedUpdatePageRecord.serializedSize() + 1];
 
@@ -30,12 +29,11 @@ public class UpdatePageRecordTest {
   }
 
   public void testSerializationPrevLSNIsNull() {
-    OWALChangesTree changesTree = new OWALChangesTree();
+    OWALPageChangesCollector changes = new OWALPageChangesCollector();
 
     OOperationUnitId unitId = OOperationUnitId.generateId();
 
-    OUpdatePageRecord serializedUpdatePageRecord = new OUpdatePageRecord(12, 100, unitId, changesTree
-    );
+    OUpdatePageRecord serializedUpdatePageRecord = new OUpdatePageRecord(12, 100, unitId, changes);
 
     byte[] content = new byte[serializedUpdatePageRecord.serializedSize() + 1];
 

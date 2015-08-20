@@ -34,6 +34,7 @@ import com.orientechnologies.orient.core.storage.cache.OCacheEntry;
 import com.orientechnologies.orient.core.metadata.schema.OType;
 import com.orientechnologies.orient.core.storage.impl.local.paginated.base.ODurablePage;
 import com.orientechnologies.orient.core.storage.impl.local.paginated.wal.OWALChangesTree;
+import com.orientechnologies.orient.core.storage.impl.local.paginated.wal.OWALPageChangesCollector;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 /**
@@ -72,8 +73,8 @@ public class OSBTreeBucket<K, V> extends ODurablePage {
 
   @SuppressFBWarnings("EI_EXPOSE_REP2")
   public OSBTreeBucket(OCacheEntry cacheEntry, boolean isLeaf, OBinarySerializer<K> keySerializer, OType[] keyTypes,
-      OBinarySerializer<V> valueSerializer, OWALChangesTree changesTree) throws IOException {
-    super(cacheEntry, changesTree);
+      OBinarySerializer<V> valueSerializer, OWALPageChangesCollector changesCollector) throws IOException {
+    super(cacheEntry, changesCollector);
 
     this.isLeaf = isLeaf;
     this.keySerializer = keySerializer;
@@ -96,8 +97,8 @@ public class OSBTreeBucket<K, V> extends ODurablePage {
 
   @SuppressFBWarnings("EI_EXPOSE_REP2")
   public OSBTreeBucket(OCacheEntry cacheEntry, OBinarySerializer<K> keySerializer, OType[] keyTypes,
-      OBinarySerializer<V> valueSerializer, OWALChangesTree changesTree) {
-    super(cacheEntry, changesTree);
+      OBinarySerializer<V> valueSerializer, OWALPageChangesCollector changesCollector) {
+    super(cacheEntry, changesCollector);
     this.keyTypes = keyTypes;
 
     this.isLeaf = getByteValue(IS_LEAF_OFFSET) > 0;

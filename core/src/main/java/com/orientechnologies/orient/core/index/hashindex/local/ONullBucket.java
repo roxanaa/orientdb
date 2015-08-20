@@ -26,6 +26,7 @@ import com.orientechnologies.common.serialization.types.OBinarySerializer;
 import com.orientechnologies.orient.core.storage.cache.OCacheEntry;
 import com.orientechnologies.orient.core.storage.impl.local.paginated.base.ODurablePage;
 import com.orientechnologies.orient.core.storage.impl.local.paginated.wal.OWALChangesTree;
+import com.orientechnologies.orient.core.storage.impl.local.paginated.wal.OWALPageChangesCollector;
 
 /**
  * @author Andrey Lomakin (a.lomakin-at-orientechnologies.com)
@@ -34,8 +35,9 @@ import com.orientechnologies.orient.core.storage.impl.local.paginated.wal.OWALCh
 public class ONullBucket<V> extends ODurablePage {
   private final OBinarySerializer<V> valueSerializer;
 
-  public ONullBucket(OCacheEntry cacheEntry, OWALChangesTree changesTree, OBinarySerializer<V> valueSerializer, boolean isNew) {
-    super(cacheEntry, changesTree);
+  public ONullBucket(OCacheEntry cacheEntry, OWALPageChangesCollector changesCollector, OBinarySerializer<V> valueSerializer,
+      boolean isNew) {
+    super(cacheEntry, changesCollector);
     this.valueSerializer = valueSerializer;
 
     if (isNew)

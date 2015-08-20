@@ -29,6 +29,7 @@ import com.orientechnologies.orient.core.exception.OStorageException;
 import com.orientechnologies.orient.core.storage.cache.OCacheEntry;
 import com.orientechnologies.orient.core.storage.impl.local.paginated.base.ODurablePage;
 import com.orientechnologies.orient.core.storage.impl.local.paginated.wal.OWALChangesTree;
+import com.orientechnologies.orient.core.storage.impl.local.paginated.wal.OWALPageChangesCollector;
 
 /**
  * @author Andrey Lomakin (a.lomakin-at-orientechnologies.com)
@@ -46,8 +47,8 @@ public class OClusterPositionMapBucket extends ODurablePage {
 
   public static final int   MAX_ENTRIES      = (MAX_PAGE_SIZE_BYTES - POSITIONS_OFFSET) / ENTRY_SIZE;
 
-  public OClusterPositionMapBucket(OCacheEntry cacheEntry, OWALChangesTree changesTree) {
-    super(cacheEntry, changesTree);
+  public OClusterPositionMapBucket(OCacheEntry cacheEntry, OWALPageChangesCollector changesCollector) {
+    super(cacheEntry, changesCollector);
   }
 
   public int add(long pageIndex, int recordPosition) throws IOException {

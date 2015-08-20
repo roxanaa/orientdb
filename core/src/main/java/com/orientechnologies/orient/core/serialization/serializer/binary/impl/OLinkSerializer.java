@@ -32,7 +32,7 @@ import com.orientechnologies.common.serialization.types.OShortSerializer;
 import com.orientechnologies.orient.core.db.record.OIdentifiable;
 import com.orientechnologies.orient.core.id.ORID;
 import com.orientechnologies.orient.core.id.ORecordId;
-import com.orientechnologies.orient.core.storage.impl.local.paginated.wal.OWALChangesTree;
+import com.orientechnologies.orient.core.storage.impl.local.paginated.wal.ODirectPointerWrapper;
 
 /**
  * Serializer for {@link com.orientechnologies.orient.core.metadata.schema.OType#LINK}
@@ -114,7 +114,7 @@ public class OLinkSerializer implements OBinarySerializer<OIdentifiable> {
   }
 
   @Override
-  public OIdentifiable deserializeFromDirectMemoryObject(OWALChangesTree.PointerWrapper wrapper, long offset) {
+  public OIdentifiable deserializeFromDirectMemoryObject(ODirectPointerWrapper wrapper, long offset) {
     final int clusterId = OShortSerializer.INSTANCE.deserializeFromDirectMemory(wrapper, offset);
 
     // Wrong implementation but needed for binary compatibility
@@ -133,7 +133,7 @@ public class OLinkSerializer implements OBinarySerializer<OIdentifiable> {
   }
 
   @Override
-  public int getObjectSizeInDirectMemory(OWALChangesTree.PointerWrapper wrapper, long offset) {
+  public int getObjectSizeInDirectMemory(ODirectPointerWrapper wrapper, long offset) {
     return RID_SIZE;
   }
 

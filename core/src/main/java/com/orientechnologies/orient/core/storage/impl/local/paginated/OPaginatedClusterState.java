@@ -26,6 +26,7 @@ import com.orientechnologies.common.serialization.types.OLongSerializer;
 import com.orientechnologies.orient.core.storage.cache.OCacheEntry;
 import com.orientechnologies.orient.core.storage.impl.local.paginated.base.ODurablePage;
 import com.orientechnologies.orient.core.storage.impl.local.paginated.wal.OWALChangesTree;
+import com.orientechnologies.orient.core.storage.impl.local.paginated.wal.OWALPageChangesCollector;
 
 /**
  * @author Andrey Lomakin
@@ -36,8 +37,8 @@ public class OPaginatedClusterState extends ODurablePage {
   private static final int SIZE_OFFSET         = RECORDS_SIZE_OFFSET + OLongSerializer.LONG_SIZE;
   private static final int FREE_LIST_OFFSET    = SIZE_OFFSET + OLongSerializer.LONG_SIZE;
 
-  public OPaginatedClusterState(OCacheEntry cacheEntry, OWALChangesTree changesTree) {
-    super(cacheEntry, changesTree);
+  public OPaginatedClusterState(OCacheEntry cacheEntry, OWALPageChangesCollector changesCollector) {
+    super(cacheEntry, changesCollector);
   }
 
   public void setSize(long size) throws IOException {
